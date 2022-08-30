@@ -79,7 +79,8 @@ class Library {
         return bookFound;
     };   
 };
-        
+ 
+
     // Примеры 
     
 const library = new Library("Библиотека имени Ленина");
