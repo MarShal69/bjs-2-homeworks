@@ -69,7 +69,7 @@ class Library {
             this.books.push(book);
         };
     };
-    
+
    findBookBy = (type, value) => this.books.find((book) => book[type] === value) || null;
 
     giveBookByName (bookName) {
@@ -79,10 +79,10 @@ class Library {
         return bookFound;
     };   
 };
- 
+
 
     // Примеры 
-    
+
 const library = new Library("Библиотека имени Ленина");
 
 library.addBook(
@@ -109,6 +109,100 @@ console.log("Количество книг после выдачи: " + library.
 
 
 
+// Задача 3
+
+class Student {
+    constructor(name, gender, age) {
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.marks = {};
+    };
+
+    // будет так
+    //   this.marks = {
+    //   "Алгебра": [2, 5, 4, 3, 2],
+    //   "Геометрия": [2, 5, 4, 3, 2],
+    // };
+
+    addMark(mark, subject) {
+        // оценка, предмет
+        if (mark > 5 || mark < 1) {
+            return "Ошибка, оценка должна быть числом от 1 до 5";
+            // console.log ("Ошибка, оценка должна быть числом от 1 до 5");
+            // завершаем
+        }
+
+        if (!this.marks[subject]) {
+            // [subject], т.к обращаемся ни к конкретному имени (алгебра, геометрия) а будет и то и другое - зараннее не знаем
+            // ! - если получим undeined, то инвертируем его в true
+            this.marks[subject] = [];
+        }
+        // и пушим оценку
+        this.marks[subject].push(mark);
+    }
+
+
+    // Средняя оценка
+    getAverageBySubject(subject) {
+        // усли нет этого предмета, то вернем "0", какой смысл считать тут оценки
+        if (!this.marks[subject]) {
+            return "Несуществующий предмет";
+            // console.log("Несуществующий предмет");
+        }
+
+        // this.marks[subject] - наш массив оценок по какому-то предмету
+        return this.marks[subject].reduce((acc, mark) => acc + mark, 0) / this.marks[subject].length;
+        // console.log(this.marks[subject].reduce((acc, mark) => acc + mark, 0) / this.marks[subject].length);
+        // или
+        // let  sum = 0;
+        // for (let i = 0; i < this.marks[subject].length; i++) {
+        // let sum += this.marks[subject][i];
+        // }
+        // return sum;
+
+    }
+
+    getAverage() {
+        /*return Object.keys(this.marks).reduce(
+          (acc, subject) => acc + this.getAverageBySubject(subject), 0
+        ) / Object.keys(this.marks).length; */
+
+        const subjects = Object.keys(this.marks);
+        // subjects - массив предметов
+        let sum = 0;
+        for (let i = 0; i < subjects.length; i++) {
+            sum += this.getAverageBySubject(subjects[i]);
+        }
+        return sum / subjects.length;
+        // console.log(sum / subjects.length);
+    }
+
+    exclude(reason) {
+        delete this.subject;
+        delete this.marks;
+        this.excluded = reason;
+        return "Исключен за попытку подделать оценки";
+        // console.log("Исключен за попытку подделать оценки");
+    };
+
+
+}
+
+const student = new Student("Олег Никифоров");
+console.log(student);
+student.addMark(5, "algebra");
+console.log(student);
+student.addMark(5, "algebra");
+student.addMark(5, "geometry");
+student.addMark(4, "geometry");
+console.log(student);
+student.addMark(6, "geometry"); // "Ошибка, оценка должна быть числом от 1 до 5"
+console.log(student);
+student.getAverageBySubject("geometry"); // Средний балл по предмету geometry 4.5
+student.getAverageBySubject("biology"); // Несуществующий предмет
+student.getAverage(); // Средний балл по всем предметам 4.75
+student.exclude("Исключен за попытку подделать оценки");
 
 
 
