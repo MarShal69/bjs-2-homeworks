@@ -8,7 +8,7 @@ function cachingDecoratorNew(func) {
       console.log("Из кэша:" + objectInCache.value);
       console.log(cache);
       return "Из кэша: " + objectInCache.value;
-    }
+    };
 
     const result = func(...arg)
     cache.push({ hash: hash, value: result });
@@ -18,7 +18,7 @@ function cachingDecoratorNew(func) {
     console.log("Вычисляем: " + result);
     console.log(cache);
     return "Вычисляем: " + result;
-  }
+  };
 }
 
 const addThree = (a, b, c) => a + b + c;
