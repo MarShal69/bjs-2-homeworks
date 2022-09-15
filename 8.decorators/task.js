@@ -1,64 +1,55 @@
-// function cachingDecoratorNew(func) {
-//   // Ваш код
-//   let cache = [];
-//   return function wrapper(...arg) {
-//     const hash = arg.join(",");
-//     let objectInCache = cache.find((item) => item.hash === hash);
-//     if (objectInCache) {
-//       console.log("Из кэша:" + objectInCache.value);
-//       console.log(cache);
-//       return "Из кэша: " + objectInCache.value;
-//     }
+function cachingDecoratorNew(func) {
+  // Ваш код
+  let cache = [];
+  return function wrapper(...arg) {
+    const hash = arg.join(",");
+    let objectInCache = cache.find((item) => item.hash === hash);
+    if (objectInCache) {
+      console.log("Из кэша:" + objectInCache.value);
+      console.log(cache);
+      return "Из кэша: " + objectInCache.value;
+    }
 
-//     const result = func(...arg)
-//     cache.push({ hash: hash, value: result });
-//     if (cache.length > 5) {
-//       cache.shift();
-//     }
-//     console.log("Вычисляем: " + result);
-//     console.log(cache);
-//     return "Вычисляем: " + result;
-//   }
-// }
+    const result = func(...arg)
+    cache.push({ hash: hash, value: result });
+    if (cache.length > 5) {
+      cache.shift();
+    }
+    console.log("Вычисляем: " + result);
+    console.log(cache);
+    return "Вычисляем: " + result;
+  }
+}
 
-// const addThree = (a, b, c) => a + b + c;
-// const upgradedAddThree = cachingDecoratorNew(addThree);
-// upgradedAddThree(1, 2, 3); // вычисляем: 6
-// upgradedAddThree(1, 2, 3); // из кэша: 6
-// upgradedAddThree(2, 2, 3); // вычисляем: 7
-// upgradedAddThree(3, 2, 3); // вычисляем: 8
-// upgradedAddThree(4, 2, 3); // вычисляем: 9
-// upgradedAddThree(5, 2, 3); // вычисляем: 10
-// upgradedAddThree(6, 2, 3); // вычисляем: 11 (при этом кэш для 1, 2, 3 уничтожается)
-// upgradedAddThree(1, 2, 3); // вычисляем: 6  (снова вычисляем, кэша нет)
-// upgradedAddThree(1, 2, 3);
+const addThree = (a, b, c) => a + b + c;
+const upgradedAddThree = cachingDecoratorNew(addThree);
+upgradedAddThree(1, 2, 3); // вычисляем: 6
+upgradedAddThree(1, 2, 3); // из кэша: 6
+upgradedAddThree(2, 2, 3); // вычисляем: 7
+upgradedAddThree(3, 2, 3); // вычисляем: 8
+upgradedAddThree(4, 2, 3); // вычисляем: 9
+upgradedAddThree(5, 2, 3); // вычисляем: 10
+upgradedAddThree(6, 2, 3); // вычисляем: 11 (при этом кэш для 1, 2, 3 уничтожается)
+upgradedAddThree(1, 2, 3); // вычисляем: 6  (снова вычисляем, кэша нет)
+upgradedAddThree(1, 2, 3);
 
 
-debounceDecoratorNew.allCount = 0
-this.wrapper.allCount = 0;
 function debounceDecoratorNew(func, delay) {
-   let timeoutId = null;
+  let timeoutId = null;
   return function wrapper(...args) {
-    console.log(wrapper.allCount++);
-    console.log("вызвали декорированную функцию")
+    wrapper.allCount++;
     if (!timeoutId) {
       func(...args);
     };
     clearTimeout(timeoutId);
+    setTimeout.count++;
     timeoutId = setTimeout(() => {
-      setTimeout.count++;
       func(...args);
     }, delay);
-    // setTimeout.count = 1;
-    // return setTimeout.count
-  }
- 
-}
-
-
-console.log(wrapper.allCount)
-
-
+    setTimeout.count = 1;
+  };
+  wrapper.allCount = 0;
+};
 
 const sendSignal = (signalOrder, delay) => console.log("Сигнал отправлен", signalOrder, delay);
 const upgradedSendSignal = debounceDecoratorNew(sendSignal, 2000);
