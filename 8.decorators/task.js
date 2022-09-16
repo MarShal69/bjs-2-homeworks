@@ -36,19 +36,21 @@ upgradedAddThree(1, 2, 3);
 
 function debounceDecoratorNew(func, delay) {
   let timeoutId = null;
-  return function wrapper(...args) {
+  function wrapper(...args) {
     wrapper.allCount++;
     if (!timeoutId) {
       func(...args);
+      wrapper.count++;
     };
     clearTimeout(timeoutId);
-    setTimeout.count++;
     timeoutId = setTimeout(() => {
       func(...args);
+      wrapper.count++;
     }, delay);
-    setTimeout.count = 1;
   };
+  wrapper.count = 0;
   wrapper.allCount = 0;
+  return wrapper;
 };
 
 const sendSignal = (signalOrder, delay) => console.log("Сигнал отправлен", signalOrder, delay);
@@ -72,11 +74,4 @@ setTimeout(() => upgradedSendSignal(7, 4500), 4500);
 setTimeout(() => {
   console.log(upgradedSendSignal.count); // было выполнено 3 отправки сигнала
   console.log(upgradedSendSignal.allCount); // было выполнено 6 вызовов декорированной функции
-}, 7000)
-
-
-
-
-
-
-
+}, 7000);
